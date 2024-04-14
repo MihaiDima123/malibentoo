@@ -32,7 +32,7 @@ public class ApiControllerAdvice {
                 ).build());
     }
 
-    @ExceptionHandler({Throwable.class, Exception.class, Error.class})
+    @ExceptionHandler(Throwable.class)
     @ResponseBody
     ResponseEntity<ErrorResponse> onAnyException(ApiException apiException) {
         LOGGER.error(INTERNAL_SERVER_ERROR_MESSAGE, apiException);
