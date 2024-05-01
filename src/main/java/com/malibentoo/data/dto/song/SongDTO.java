@@ -1,10 +1,10 @@
-package com.malibentoo.facade.dto.song;
+package com.malibentoo.data.dto.song;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.malibentoo.facade.dto.artist.ArtistDTO;
-import com.malibentoo.facade.dto.genre.GenreDTO;
-import com.malibentoo.facade.dto.producer.ProducerDTO;
-import com.malibentoo.facade.entities.Song;
+import com.malibentoo.data.dto.artist.ArtistDTO;
+import com.malibentoo.data.dto.genre.GenreDTO;
+import com.malibentoo.data.dto.producer.ProducerDTO;
+import com.malibentoo.data.entities.Song;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

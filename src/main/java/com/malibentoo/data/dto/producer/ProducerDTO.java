@@ -1,7 +1,7 @@
-package com.malibentoo.facade.dto.genre;
+package com.malibentoo.data.dto.producer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.malibentoo.facade.entities.Genre;
+import com.malibentoo.data.entities.Producer;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,15 +10,15 @@ import lombok.Setter;
 @Setter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class GenreDTO {
+public class ProducerDTO {
     private Integer id;
     private String name;
 
-    public static GenreDTO from(Genre genre) {
-        return GenreDTO
+    public static ProducerDTO from(Producer producer) {
+        return ProducerDTO
                 .builder()
-                .id(genre.getId())
-                .name(genre.getName())
+                .id(producer.getId())
+                .name(producer.getName())
                 .build();
     }
 }

@@ -1,4 +1,4 @@
-package com.malibentoo.facade.entities;
+package com.malibentoo.data.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

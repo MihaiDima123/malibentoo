@@ -1,8 +1,8 @@
-package com.malibentoo.facade.dto.lyric;
+package com.malibentoo.data.dto.lyric;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.malibentoo.facade.dto.song.SongDTO;
-import com.malibentoo.facade.entities.Lyric;
+import com.malibentoo.data.dto.song.SongDTO;
+import com.malibentoo.data.entities.Lyric;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
