@@ -1,7 +1,7 @@
 package com.malibentoo.facade.artist.service;
 
 import com.malibentoo.core.annotations.crud.ValidateEntityBefore;
-import com.malibentoo.core.restful.BaseService;
+import com.malibentoo.core.restful.service.BaseService;
 import com.malibentoo.data.entities.Artist;
 import com.malibentoo.facade.artist.repository.ArtistRepository;
 import org.springframework.context.ApplicationContext;

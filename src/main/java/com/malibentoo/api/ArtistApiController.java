@@ -1,6 +1,6 @@
 package com.malibentoo.api;
 
-import com.malibentoo.core.restful.RestfulEntity;
+import com.malibentoo.core.restful.objects.RestfulEntity;
 import com.malibentoo.data.dto.artist.ArtistDTO;
 import com.malibentoo.exception.api.ApiException;
 import com.malibentoo.facade.artist.service.ArtistService;

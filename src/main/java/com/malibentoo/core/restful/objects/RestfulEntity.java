@@ -1,4 +1,4 @@
-package com.malibentoo.core.restful;
+package com.malibentoo.core.restful.objects;
 
 public interface RestfulEntity {
     RestfulDTO toDTO();

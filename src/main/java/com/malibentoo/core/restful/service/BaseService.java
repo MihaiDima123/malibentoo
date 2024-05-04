@@ -1,8 +1,10 @@
-package com.malibentoo.core.restful;
+package com.malibentoo.core.restful.service;
 
 import com.malibentoo.core.annotations.crud.AnnotationProvider;
 import com.malibentoo.core.annotations.crud.ValidateEntityBefore;
 import com.malibentoo.core.restful.enums.BaseServiceMethod;
+import com.malibentoo.core.restful.objects.RestfulDTO;
+import com.malibentoo.core.restful.objects.RestfulEntity;
 import com.malibentoo.core.validator.DtoValidator;
 import com.malibentoo.exception.api.ApiException;
 import jakarta.annotation.Nonnull;
