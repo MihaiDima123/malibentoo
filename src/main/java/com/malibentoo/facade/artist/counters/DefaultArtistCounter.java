@@ -28,4 +28,13 @@ public class DefaultArtistCounter implements EntityCounter {
     public boolean existsByName(String name, boolean includeInactive) {
         return countByName(name, includeInactive) > 0;
     }
+
+    @Override
+    public boolean existsById(int id, boolean includeInactive) {
+        if (includeInactive) {
+            return artistRepository.getCountByIdIncludingInactive(id) > 0;
+        }
+
+        return artistRepository.getCountById(id) > 0;
+    }
 }
