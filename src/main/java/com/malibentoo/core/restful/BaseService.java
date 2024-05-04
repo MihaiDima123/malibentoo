@@ -1,76 +1,92 @@
 package com.malibentoo.core.restful;
 
+import com.malibentoo.core.annotations.crud.AnnotationProvider;
 import com.malibentoo.core.annotations.crud.ValidateEntityBefore;
-import com.malibentoo.core.functional.ApiConsumer;
+import com.malibentoo.core.restful.enums.BaseServiceMethod;
 import com.malibentoo.core.validator.DtoValidator;
 import com.malibentoo.exception.api.ApiException;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
+import java.util.function.Consumer;
 
-public abstract class BaseService<EntityType extends RestfulEntity> {
-    protected abstract EntityType doCreate(EntityType obj);
-    protected abstract EntityType doUpdate(EntityType obj);
-    protected abstract EntityType doGetById(Integer id);
-
-    private static final String METHOD_DO_CREATE = "doCreate";
-    private static final String METHOD_DO_UPDATE = "doUpdate";
-
-    public abstract void delete(EntityType obj);
-
+public abstract class BaseService<EntityType extends RestfulEntity> implements AnnotationProvider {
+    @SuppressWarnings("unused")
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ApplicationContext applicationContext;
+
+    private DtoValidator createValidator;
+    private DtoValidator updateValidator;
+    private DtoValidator deleteValidator;
 
     public BaseService(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
-    public RestfulEntity create(RestfulDTO obj) throws ApiException {
-        applyAnnotation(
-                METHOD_DO_CREATE,
-                ValidateEntityBefore.class,
-                getValidateEntityBeforeApiConsumer(obj)
-        );
+    // Abstracts
+    protected abstract EntityType doCreate(EntityType obj);
+    protected abstract EntityType doUpdate(EntityType obj);
+    protected abstract EntityType doGetById(Integer id);
+    protected abstract Integer doDelete(EntityType obj);
 
+    // Proxy
+    @SuppressWarnings("unused")
+    public RestfulEntity create(RestfulDTO obj) throws ApiException {
+        if (createValidator != null) {
+            createValidator.validateWrite(obj);
+        }
         return doCreate(obj.toEntity());
     }
 
+    @SuppressWarnings("unused")
     public RestfulEntity update(RestfulDTO obj) throws ApiException {
-        applyAnnotation(
-                METHOD_DO_UPDATE,
-                ValidateEntityBefore.class,
-                getValidateEntityBeforeApiConsumer(obj)
-        );
+        if (updateValidator != null) {
+            updateValidator.validateWrite(obj);
+        }
         return doUpdate(obj.toEntity());
     }
 
+    @SuppressWarnings("unused")
+    public Integer delete(RestfulDTO obj) throws ApiException {
+        if (deleteValidator != null)  {
+            deleteValidator.validateWrite(obj);
+        }
+        return doDelete(obj.toEntity());
+    }
+
+    @SuppressWarnings("unused")
     public RestfulDTO getById(Integer id) {
         return doGetById(id).toDTO();
     }
 
-    private ApiConsumer<ValidateEntityBefore> getValidateEntityBeforeApiConsumer(RestfulDTO obj) {
-        return annotation -> {
-            var validatorBean = applicationContext.getBean(annotation.value());
-            if (validatorBean instanceof DtoValidator validateEntityBefore) {
-                validateEntityBefore.validateWrite(obj);
-            } else {
-                throw new RuntimeException(validatorBean.getClass().getSimpleName() + " is not a validator");
-            }
-        };
+    // Utils
+    @Nullable
+    private DtoValidator getValidatorBeanForAnnotation(@Nonnull Annotation annotation) {
+        if (annotation instanceof ValidateEntityBefore validateEntityBeforeAnnotation) {
+            return applicationContext.getBean(validateEntityBeforeAnnotation.value(), DtoValidator.class);
+        }
+
+        return null;
     }
 
-    private <AnnotationType extends Annotation> void applyAnnotation(String methodName,
-                                                                     Class<AnnotationType> annotationClass,
-                                                                     ApiConsumer<AnnotationType> consumer) throws ApiException {
+    private void applyValidator(BaseServiceMethod method, Consumer<ValidateEntityBefore> consumer) {
+        getAnnotationForMethod(method.getMethod(), ValidateEntityBefore.class).ifPresent(consumer);
+    }
 
-        var annotation = Arrays.stream(this.getClass().getDeclaredMethods())
-                .filter(it -> it.getName().equals(methodName))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Method " + methodName + " not found"))
-                .getAnnotation(annotationClass);
+    @PostConstruct
+    private void postConstruct() {
+        applyValidator(BaseServiceMethod.DO_CREATE, validateEntityBefore ->
+                createValidator = getValidatorBeanForAnnotation(validateEntityBefore));
 
-        if (annotation != null) {
-            consumer.accept(annotation);
-        }
+        applyValidator(BaseServiceMethod.DO_UPDATE, validateEntityBefore ->
+                updateValidator = getValidatorBeanForAnnotation(validateEntityBefore));
+
+        applyValidator(BaseServiceMethod.DO_DELETE, validateEntityBefore ->
+                deleteValidator = getValidatorBeanForAnnotation(validateEntityBefore));
     }
 }

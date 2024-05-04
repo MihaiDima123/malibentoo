@@ -35,7 +35,7 @@ public class ArtistService extends BaseService<Artist> {
     }
 
     @Override
-    public void delete(Artist obj) {
-
+    public Integer doDelete(Artist obj) {
+        return null;
     }
 }
