@@ -36,7 +36,7 @@ public class ArtistService extends BaseService<Artist> {
     }
 
     @Override
-    @ValidateEntityBefore(value = "artistWriteValidator")
+    @ValidateEntityBefore(value = "artistWriteValidator") // TODO: get persisted entity for update
     protected Artist doUpdate(Artist artistRequest) throws ApiException {
         checkCountAndThrow(artistRequest.getId());
         return artistRepository.save(artistRequest);
