@@ -5,7 +5,7 @@ public class ApiException extends Exception {
         super(message);
     }
 
-    public ApiException(String message, Throwable cause) {
-        super(message, cause);
+    public static ApiException of(String message) {
+        return new ApiException(message);
     }
 }
