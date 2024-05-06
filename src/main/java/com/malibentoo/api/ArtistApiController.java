@@ -25,7 +25,7 @@ public class ArtistApiController {
 
     @GetMapping("{id}")
     public ResponseEntity<ArtistDTO> getArtistById(@PathVariable("id") Integer id) throws ApiException {
-        return ResponseEntity.ok((ArtistDTO) artistService.getById(id));
+        return ResponseEntity.ok(artistService.getById(id));
     }
 
     @PostMapping
