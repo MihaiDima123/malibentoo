@@ -77,6 +77,11 @@ public abstract class BaseService<DtoType extends RestfulDTO> implements Annotat
     // Utils
     @Nullable
     private DtoValidator getValidatorBeanForAnnotation(@Nonnull Annotation annotation) {
+        if (applicationContext == null) {
+            logger.warn("ApplicationContext is null");
+            return null;
+        }
+
         if (annotation instanceof ValidateEntityBefore validateEntityBeforeAnnotation) {
             return applicationContext.getBean(validateEntityBeforeAnnotation.value(), DtoValidator.class);
         }
