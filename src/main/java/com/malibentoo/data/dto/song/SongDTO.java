@@ -40,7 +40,7 @@ public class SongDTO {
                 )
                 .performers(Optional
                         .ofNullable(song.getSongPerformers())
-                        .map(artists -> artists.stream().map(ArtistDTO::from).toList())
+                        .map(artists -> artists.stream().map(it -> ArtistDTO.transformer().from(it)).toList())
                         .orElse(null)
                 )
                 .build();

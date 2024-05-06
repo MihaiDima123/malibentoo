@@ -27,17 +27,15 @@ public class ArtistService extends BaseService<ArtistDTO> {
 
     @Override
     protected ArtistDTO doGetById(@Nonnull Integer id) throws ApiException {
-        return ArtistDTO.from(getOrElseThrow(id));
+        return ArtistDTO.transformer().from(getOrElseThrow(id));
     }
 
     @Override
     @ValidateEntityBefore(value = "artistWriteValidator")
     protected ArtistDTO doCreate(ArtistDTO artistDTO) {
-        var artist = Artist.builder()
-                .name(artistDTO.getName())
-                .build();
+        var artist = ArtistDTO.transformer().to(artistDTO);
 
-        return ArtistDTO.from(
+        return ArtistDTO.transformer().from(
                 artistRepository.save(artist)
         );
     }
@@ -47,7 +45,7 @@ public class ArtistService extends BaseService<ArtistDTO> {
     protected ArtistDTO doUpdate(ArtistDTO artistRequest) throws ApiException {
         var artist = getOrElseThrow(artistRequest.getId());
 
-        return ArtistDTO.from(artistRepository.save(artist));
+        return ArtistDTO.transformer().from(artistRepository.save(artist));
     }
 
     @Override
