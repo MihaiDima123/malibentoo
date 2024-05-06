@@ -44,4 +44,12 @@ public class BaseTestDto extends RestfulDTO {
     public int hashCode() {
         return Objects.hash(id, field);
     }
+
+    @Override
+    public String toString() {
+        return "BaseTestDto{" +
+                "id=" + id +
+                ", field='" + field + '\'' +
+                '}';
+    }
 }

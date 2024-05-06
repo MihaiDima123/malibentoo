@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
 	java
 	id("org.springframework.boot") version "3.2.4"
@@ -44,6 +47,16 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	testLogging {
+		events(
+			TestLogEvent.PASSED,
+			TestLogEvent.FAILED,
+			TestLogEvent.SKIPPED,
+		)
+		exceptionFormat = TestExceptionFormat.FULL
+		showExceptions = true
+		showCauses = true
+	}
 }
 
 hibernate {
