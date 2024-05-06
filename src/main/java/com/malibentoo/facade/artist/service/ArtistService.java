@@ -2,6 +2,7 @@ package com.malibentoo.facade.artist.service;
 
 import com.malibentoo.core.annotations.crud.ValidateEntityBefore;
 import com.malibentoo.core.restful.service.BaseService;
+import com.malibentoo.data.dto.artist.ArtistDTO;
 import com.malibentoo.data.entities.Artist;
 import com.malibentoo.exception.api.ApiException;
 import com.malibentoo.exception.api.ApiExceptionFactory;
@@ -12,7 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ArtistService extends BaseService<Artist> {
+public class ArtistService extends BaseService<ArtistDTO> {
     private final ArtistRepository artistRepository;
     private final DefaultArtistCounter defaultArtistCounter;
 
@@ -25,27 +26,33 @@ public class ArtistService extends BaseService<Artist> {
     }
 
     @Override
-    protected Artist doGetById(@Nonnull Integer id) throws ApiException {
-        return getOrElseThrow(id);
+    protected ArtistDTO doGetById(@Nonnull Integer id) throws ApiException {
+        return ArtistDTO.from(getOrElseThrow(id));
     }
 
     @Override
     @ValidateEntityBefore(value = "artistWriteValidator")
-    protected Artist doCreate(Artist artist) {
-        return artistRepository.save(artist);
+    protected ArtistDTO doCreate(ArtistDTO artistDTO) {
+        var artist = Artist.builder()
+                .name(artistDTO.getName())
+                .build();
+
+        return ArtistDTO.from(
+                artistRepository.save(artist)
+        );
     }
 
     @Override
-    @ValidateEntityBefore(value = "artistWriteValidator") // TODO: get persisted entity for update
-    protected Artist doUpdate(Artist artistRequest) throws ApiException {
-        checkCountAndThrow(artistRequest.getId());
-        return artistRepository.save(artistRequest);
+    @ValidateEntityBefore(value = "artistWriteValidator")
+    protected ArtistDTO doUpdate(ArtistDTO artistRequest) throws ApiException {
+        var artist = getOrElseThrow(artistRequest.getId());
+
+        return ArtistDTO.from(artistRepository.save(artist));
     }
 
     @Override
     protected void doDelete(@Nonnull Integer id) throws ApiException {
-        assertArtistExists(id, () ->
-                artistRepository.removeArtistById(id));
+        assertArtistExists(id, () -> artistRepository.removeArtistById(id));
     }
 
     private Artist getOrElseThrow(@Nonnull Integer id) throws ApiException {

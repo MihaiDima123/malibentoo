@@ -2,7 +2,6 @@ package com.malibentoo.data.dto.artist;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.malibentoo.core.restful.objects.RestfulDTO;
-import com.malibentoo.core.restful.objects.RestfulEntity;
 import com.malibentoo.data.entities.Artist;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,14 +21,5 @@ public class ArtistDTO extends RestfulDTO {
                 .id(artist.getId())
                 .name(artist.getName())
                 .build();
-    }
-
-    @Override
-    protected RestfulEntity doToEntity() {
-        final var artist = new Artist();
-        artist.setId(id);
-        artist.setName(name);
-
-        return artist;
     }
 }

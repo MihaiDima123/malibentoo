@@ -1,6 +1,6 @@
 package com.malibentoo.api;
 
-import com.malibentoo.core.restful.objects.RestfulEntity;
+import com.malibentoo.core.restful.objects.RestfulDTO;
 import com.malibentoo.data.dto.artist.ArtistDTO;
 import com.malibentoo.exception.api.ApiException;
 import com.malibentoo.facade.artist.service.ArtistService;
@@ -29,12 +29,12 @@ public class ArtistApiController {
     }
 
     @PostMapping
-    public ResponseEntity<RestfulEntity> createArtist(@RequestBody ArtistDTO artistDTO) throws ApiException {
+    public ResponseEntity<RestfulDTO> createArtist(@RequestBody ArtistDTO artistDTO) throws ApiException {
         return ResponseEntity.ok(artistService.create(artistDTO));
     }
 
     @PatchMapping
-    private ResponseEntity<RestfulEntity> updateArtist(@RequestBody ArtistDTO artistDTO) throws ApiException {
+    private ResponseEntity<RestfulDTO> updateArtist(@RequestBody ArtistDTO artistDTO) throws ApiException {
         return ResponseEntity.ok(artistService.update(artistDTO));
     }
 

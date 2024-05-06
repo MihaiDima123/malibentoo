@@ -4,7 +4,6 @@ import com.malibentoo.core.annotations.crud.AnnotationProvider;
 import com.malibentoo.core.annotations.crud.ValidateEntityBefore;
 import com.malibentoo.core.restful.enums.BaseServiceMethod;
 import com.malibentoo.core.restful.objects.RestfulDTO;
-import com.malibentoo.core.restful.objects.RestfulEntity;
 import com.malibentoo.core.validator.DtoValidator;
 import com.malibentoo.exception.api.ApiException;
 import com.malibentoo.exception.api.ApiExceptionFactory;
@@ -19,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.annotation.Annotation;
 import java.util.function.Consumer;
 
-public abstract class BaseService<EntityType extends RestfulEntity> implements AnnotationProvider {
+public abstract class BaseService<DtoType extends RestfulDTO> implements AnnotationProvider {
     @SuppressWarnings("unused")
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ApplicationContext applicationContext;
@@ -32,28 +31,28 @@ public abstract class BaseService<EntityType extends RestfulEntity> implements A
     }
 
     // Abstracts
-    protected abstract EntityType doCreate(EntityType obj);
-    protected abstract EntityType doUpdate(EntityType obj) throws ApiException;
-    protected abstract EntityType doGetById(@Nonnull Integer id) throws ApiException;
+    protected abstract DtoType doCreate(DtoType obj);
+    protected abstract DtoType doUpdate(DtoType obj) throws ApiException;
+    protected abstract DtoType doGetById(@Nonnull Integer id) throws ApiException;
     protected abstract void doDelete(@Nonnull Integer id) throws ApiException;
 
     // Proxy
     @SuppressWarnings("unused")
     @Transactional
-    public RestfulEntity create(RestfulDTO obj) throws ApiException {
+    public DtoType create(DtoType obj) throws ApiException {
         if (createValidator != null) {
             createValidator.validateWrite(obj);
         }
-        return doCreate(obj.toEntity());
+        return doCreate(obj);
     }
 
     @SuppressWarnings("unused")
     @Transactional
-    public RestfulEntity update(RestfulDTO obj) throws ApiException {
+    public DtoType update(DtoType obj) throws ApiException {
         if (updateValidator != null) {
             updateValidator.validateWrite(obj);
         }
-        return doUpdate(obj.toEntity());
+        return doUpdate(obj);
     }
 
     @SuppressWarnings("unused")
@@ -64,9 +63,9 @@ public abstract class BaseService<EntityType extends RestfulEntity> implements A
     }
 
     @SuppressWarnings("unused")
-    public RestfulDTO getById(Integer id) throws ApiException {
+    public DtoType getById(Integer id) throws ApiException {
         assertIdNotNull(id);
-        return doGetById(id).toDTO();
+        return doGetById(id);
     }
 
     private static void assertIdNotNull(Integer id) throws ApiException {
