@@ -2,6 +2,7 @@ package com.malibentoo.facade.artist.counters;
 
 import com.malibentoo.core.restful.repo.EntityCounter;
 import com.malibentoo.facade.artist.repository.ArtistRepository;
+import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -15,7 +16,7 @@ public class DefaultArtistCounter implements EntityCounter {
     }
 
     @Override
-    public int countByName(String name, boolean includeInactive) {
+    public int countByName(@Nonnull String name, boolean includeInactive) {
         Objects.requireNonNull(name);
         if (includeInactive) {
             return artistRepository.getCountByNameIncludingInactive(name.trim());

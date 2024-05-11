@@ -5,10 +5,6 @@ public interface EntityCounter {
     boolean existsByName(String name, boolean includeInactive);
     boolean existsById(int id, boolean includeInactive);
 
-    default int countByName(String name) {
-        return countByName(name, false);
-    }
-
     default boolean existsByName(String name) {
         return existsByName(name, false);
     }
