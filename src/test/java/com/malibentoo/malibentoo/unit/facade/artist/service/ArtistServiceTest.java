@@ -14,7 +14,10 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -46,11 +49,17 @@ public class ArtistServiceTest {
                 .from(testArtistEntity);
 
         assertThat(serviceResult, ArtistEntityMatcher.matchArtistDtoFields(expectedResult));
+
+        verify(artistRepositoryMock, times(1)).getById(TEST_ARTIST_ID);
     }
 
     @Test
     public void testDoGetById_givenNonExistentId_shouldThrowAnApiException() {
+        when(artistRepositoryMock.getById(TEST_ARTIST_ID)).thenReturn(Optional.empty());
 
+        assertThrows(ApiException.class, () -> artistService.getById(TEST_ARTIST_ID));
+
+        verify(artistRepositoryMock, times(1)).getById(TEST_ARTIST_ID);
     }
 
     @Test
