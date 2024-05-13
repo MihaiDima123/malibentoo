@@ -16,10 +16,12 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.any;
 
 public class ArtistServiceTest {
     private final static Integer TEST_ARTIST_ID = 123;
@@ -63,27 +65,57 @@ public class ArtistServiceTest {
     }
 
     @Test
-    public void testDoCreate_givenDto_shouldReturnExpectedValueByCallingRepository() {
+    public void testDoCreate_givenDto_shouldReturnExpectedValueByCallingRepository() throws ApiException {
+        when(artistRepositoryMock.save(any())).thenReturn(testArtistEntity);
+        ArtistDTO dto = ArtistDTO.transformer().from(testArtistEntity);
 
+        assertThat(dto, ArtistEntityMatcher.matchArtistDtoFields(artistService.create(dto)));
+
+        verify(artistRepositoryMock, times(1)).save(any());
     }
 
     @Test
     public void testDoUpdate_givenDto_shouldAssertThatIdExists() {
+        when(artistRepositoryMock.getById(TEST_ARTIST_ID)).thenReturn(Optional.empty());
 
+        assertThrows(ApiException.class, () -> artistService.update(ArtistDTO.transformer().from(testArtistEntity)));
+
+        verify(artistRepositoryMock, times(1)).getById(TEST_ARTIST_ID);
+        verify(artistRepositoryMock, never()).save(any());
     }
 
     @Test
-    public void testDoUpdate_givenDto_shouldReturnTransformedRepositoryResponseAfterTransformingTheResult() {
+    public void testDoUpdate_givenDto_shouldReturnTransformedRepositoryResponseAfterTransformingTheResult() throws ApiException {
+        when(artistRepositoryMock.save(any())).thenReturn(testArtistEntity);
+        when(artistRepositoryMock.getById(TEST_ARTIST_ID)).thenReturn(Optional.of(testArtistEntity));
 
+        ArtistDTO dto = ArtistDTO.transformer().from(testArtistEntity);
+
+        assertThat(dto, ArtistEntityMatcher.matchArtistDtoFields(
+                artistService.update(dto)
+        ));
+
+        verify(artistRepositoryMock, times(1)).save(any());
+        verify(artistRepositoryMock, times(1)).getById(TEST_ARTIST_ID);
     }
 
     @Test
-    public void testDoDelete_givenExistingId_shouldCallRepositoryWithThatId() {
+    public void testDoDelete_givenExistingId_shouldCallRepositoryWithThatId() throws ApiException {
+        when(artistCounterMock.existsById(TEST_ARTIST_ID)).thenReturn(true);
 
+        artistService.delete(TEST_ARTIST_ID);
+
+        verify(artistCounterMock, times(1)).existsById(TEST_ARTIST_ID);
+        verify(artistRepositoryMock, times(1)).removeArtistById(TEST_ARTIST_ID);
     }
 
     @Test
     public void testDoDelete_givenNonExistentId_shouldThrowAnApiException() {
+        when(artistCounterMock.existsById(TEST_ARTIST_ID)).thenReturn(false);
 
+        assertThrows(ApiException.class, () -> artistService.delete(TEST_ARTIST_ID));
+
+        verify(artistCounterMock, times(1)).existsById(TEST_ARTIST_ID);
+        verify(artistRepositoryMock, never()).removeArtistById(TEST_ARTIST_ID);
     }
 }
