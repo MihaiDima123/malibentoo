@@ -33,7 +33,7 @@ public class ArtistService extends BaseService<ArtistDTO> {
     @Override
     @ValidateEntityBefore(value = "artistWriteValidator")
     protected ArtistDTO doCreate(ArtistDTO artistDTO) {
-        var artist = ArtistDTO.transformer().to(artistDTO);
+        var artist = ArtistDTO.transformer().toBase(artistDTO);
 
         return ArtistDTO.transformer().from(
                 artistRepository.save(artist)

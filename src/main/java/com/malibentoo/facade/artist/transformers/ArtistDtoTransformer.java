@@ -15,7 +15,7 @@ public class ArtistDtoTransformer implements DtoTransformer<ArtistDTO, Artist> {
     }
 
     @Override
-    public Artist to(ArtistDTO artistDTO) {
+    public Artist toBase(ArtistDTO artistDTO) {
         return Artist
                 .builder()
                 .id(artistDTO.getId())
