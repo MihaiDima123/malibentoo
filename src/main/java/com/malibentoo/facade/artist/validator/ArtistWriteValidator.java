@@ -10,6 +10,7 @@ import com.malibentoo.utils.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
+@SuppressWarnings("unused")
 public class ArtistWriteValidator implements DtoValidator {
     private final DefaultArtistCounter defaultArtistCounter;
 
