@@ -94,6 +94,7 @@ public abstract class BaseService<DtoType extends RestfulDTO> implements Annotat
     }
 
     @PostConstruct
+    @SuppressWarnings("unused")
     private void postConstruct() {
         applyValidator(BaseServiceMethod.DO_CREATE, validateEntityBefore ->
                 createValidator = getValidatorBeanForAnnotation(validateEntityBefore));
