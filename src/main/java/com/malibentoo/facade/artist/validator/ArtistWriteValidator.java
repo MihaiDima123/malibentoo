@@ -1,20 +1,20 @@
 package com.malibentoo.facade.artist.validator;
 
 import com.malibentoo.core.restful.objects.RestfulDTO;
+import com.malibentoo.core.restful.repo.EntityCounter;
 import com.malibentoo.core.validator.DtoValidator;
 import com.malibentoo.data.dto.artist.ArtistDTO;
 import com.malibentoo.exception.api.ApiException;
 import com.malibentoo.exception.api.ApiExceptionFactory;
-import com.malibentoo.facade.artist.counters.DefaultArtistCounter;
 import com.malibentoo.utils.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
 @SuppressWarnings("unused")
 public class ArtistWriteValidator implements DtoValidator {
-    private final DefaultArtistCounter defaultArtistCounter;
+    private final EntityCounter defaultArtistCounter;
 
-    public ArtistWriteValidator(DefaultArtistCounter defaultArtistCounter) {
+    public ArtistWriteValidator(EntityCounter defaultArtistCounter) {
         this.defaultArtistCounter = defaultArtistCounter;
     }
 
